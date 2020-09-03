@@ -6,9 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.mvi.R
-import com.example.mvi.model.BlogPost
-import com.example.mvi.ui.main.state.MainStateEvent
-import com.example.mvi.ui.main.state.MainStateEvent.*
+import com.example.mvi.ui.main.state.MainStateEvent.GetBlogPostsEvent
+import com.example.mvi.ui.main.state.MainStateEvent.GetUserEvent
 
 class MainFragment : Fragment() {
     lateinit var viewModel: MainViewModel
