@@ -11,6 +11,7 @@ import com.example.mvi.ui.main.state.MainStateEvent
 import com.example.mvi.ui.main.state.MainStateEvent.*
 import com.example.mvi.ui.main.state.MainViewState
 import com.example.mvi.util.AbsentLiveData
+import com.example.mvi.util.DataState
 
 class MainViewModel : ViewModel() {
     //event that happens
@@ -20,14 +21,14 @@ class MainViewModel : ViewModel() {
     val viewState: LiveData<MainViewState>
         get() = _viewState
 
-    val dataState: LiveData<MainViewState> = Transformations
+    val dataState: LiveData<DataState<MainViewState>> = Transformations
         .switchMap(_stateEvent) { stateEvent ->
             stateEvent?.let {
                 handleStateEvent(it)
             }
         }
 
-    fun handleStateEvent(stateEvent: MainStateEvent): LiveData<MainViewState> {
+    fun handleStateEvent(stateEvent: MainStateEvent): LiveData<DataState<MainViewState>> {
         println("DEBUG: New StateEvent detected: $stateEvent")
         when (stateEvent) {
             is GetBlogPostsEvent -> {
