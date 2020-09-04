@@ -34,12 +34,9 @@ class MainViewModel : ViewModel() {
             is GetBlogPostsEvent -> {
                 return Repository.getBlogPosts()
             }
-
             is GetUserEvent -> {
                 return Repository.getUser(stateEvent.userId)
             }
-
-
             is None -> {
                 return AbsentLiveData.create()
             }
