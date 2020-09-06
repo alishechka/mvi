@@ -6,15 +6,20 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvi.R
+import com.example.mvi.model.BlogPost
 import com.example.mvi.ui.DataStateListener
 import com.example.mvi.ui.main.state.MainStateEvent.GetBlogPostsEvent
 import com.example.mvi.ui.main.state.MainStateEvent.GetUserEvent
+import com.example.mvi.util.TopSpacingItemDecoration
+import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.ClassCastException
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), BlogListAdapter.Interaction {
     lateinit var viewModel: MainViewModel
     lateinit var dataStateHandler: DataStateListener
+    lateinit var blogListAdapter: BlogListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +38,17 @@ class MainFragment : Fragment() {
         } ?: throw Exception("invalid Activity")
 
         subscribeObservers()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(activity)
+            val topSpacingItemDecoration = TopSpacingItemDecoration(30)
+            addItemDecoration(topSpacingItemDecoration)
+            blogListAdapter = BlogListAdapter(this@MainFragment)
+            adapter = blogListAdapter
+        }
     }
 
     fun subscribeObservers() {
@@ -59,6 +75,7 @@ class MainFragment : Fragment() {
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             viewState.blogPosts?.let {
                 println("DEBUG: DataState: ${it}")
+                blogListAdapter.submitList(it)
             }
             viewState.user?.let {
                 println("DEBUG: DataState: ${it}")
@@ -95,5 +112,10 @@ class MainFragment : Fragment() {
         } catch (e: ClassCastException) {
             println("DEBUG: $context must implement DataStateListener")
         }
+    }
+
+    override fun onItemSelected(position: Int, item: BlogPost) {
+        println("DEBUG: CLICKED $position")
+        println("DEBUG: CLICKED $item")
     }
 }
