@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.mvi.R
 import com.example.mvi.model.BlogPost
+import com.example.mvi.model.User
 import com.example.mvi.ui.DataStateListener
 import com.example.mvi.ui.main.state.MainStateEvent.GetBlogPostsEvent
 import com.example.mvi.ui.main.state.MainStateEvent.GetUserEvent
@@ -79,8 +81,19 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
             }
             viewState.user?.let {
                 println("DEBUG: DataState: ${it}")
+                setUserProperties(it)
             }
         })
+    }
+
+    private fun setUserProperties(user: User) {
+        email.text = user.email
+        username.text = user.username
+        view?.let {
+            Glide.with(it.context)
+                .load(user.image)
+                .into(image)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -94,7 +107,6 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
             R.id.action_get_blogs -> triggerGetBlogsEvent()
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     private fun triggerGetBlogsEvent() {
